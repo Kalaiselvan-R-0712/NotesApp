@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notes App</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #00b4db, #0083b0);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 5vw;
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      text-align: center;
+      margin-bottom: 2rem;
+      text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+    }
+
+    .note-form {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 2.5rem;
+      background-color: #ffffff10;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      backdrop-filter: blur(4px);
+    }
+
+    .note-form input,
+    .note-form textarea {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      color: #333;
+    }
+
+    .note-form textarea {
+      resize: none;
+    }
+
+    .note-form button {
+      background-color: #00ffaa;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .note-form button:hover {
+      background-color: #00cc88;
+    }
+
+    .notes-container {
+      width: 100%;
+      max-width: 1200px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .note-card {
+      background-color: #ffffff22;
+      padding: 20px;
+      border-radius: 12px;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.25);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      color: #fff;
+    }
+
+    .note-card h3 {
+      font-size: 1.25rem;
+      word-break: break-word;
+    }
+
+    .note-card p {
+      font-size: 1rem;
+      color: #f1f1f1;
+      word-break: break-word;
+    }
+
+    .delete-btn {
+      align-self: flex-end;
+      background-color: #ff4d4d;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: white;
+      transition: background 0.3s;
+    }
+
+    .delete-btn:hover {
+      background-color: #cc3333;
+    }
+
+    @media (max-width: 480px) {
+      .note-form {
+        padding: 16px;
+      }
+
+      .note-card {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📝 Notes App</h1>
+
+  <div class="note-form">
+    <input type="text" id="noteTitle" placeholder="Note Title" />
+    <textarea id="noteBody" rows="4" placeholder="Note Body"></textarea>
+    <button id="addNoteBtn">Add Note</button>
+  </div>
+
+  <div class="notes-container" id="notesContainer"></div>
+
+  <script>
+    let notes = [];
+
+    const titleInput = document.getElementById("noteTitle");
+    const bodyInput = document.getElementById("noteBody");
+    const notesContainer = document.getElementById("notesContainer");
+    const addBtn = document.getElementById("addNoteBtn");
+
+    addBtn.addEventListener("click", () => {
+      const title = titleInput.value.trim();
+      const body = bodyInput.value.trim();
+
+      if (!title || !body) {
+        alert("Both Title and Body are required!");
+        return;
+      }
+
+      const note = { title, body };
+      notes.push(note);
+
+      titleInput.value = "";
+      bodyInput.value = "";
+
+      renderNotes();
+    });
+
+    function renderNotes() {
+      notesContainer.innerHTML = "";
+
+      notes.forEach((note, index) => {
+        const noteDiv = document.createElement("div");
+        noteDiv.className = "note-card";
+
+        const titleEl = document.createElement("h3");
+        titleEl.textContent = note.title;
+
+        const bodyEl = document.createElement("p");
+        bodyEl.textContent = note.body;
+
+        const delBtn = document.createElement("button");
+        delBtn.className = "delete-btn";
+        delBtn.textContent = "Delete";
+        delBtn.addEventListener("click", () => {
+          notes.splice(index, 1);
+          renderNotes();
+        });
+
+        noteDiv.appendChild(titleEl);
+        noteDiv.appendChild(bodyEl);
+        noteDiv.appendChild(delBtn);
+
+        notesContainer.appendChild(noteDiv);
+      });
+    }
+  </script>
+
+</body>
+</html>
